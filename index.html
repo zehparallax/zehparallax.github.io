@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portriga – Punkteblock</title>
+<meta name="description" content="Punkteblock für das Allgäuer Stichspiel Portriga: Ansagen und Stiche eintragen, Punkte automatisch berechnen, Statistiken über alle Partien.">
+<meta name="theme-color" content="#2C1E15">
+
+<!-- Symbol für Browser-Tab, Homebildschirm und Manifest -->
+<link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Portriga">
+<meta name="application-name" content="Portriga">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Ergänzende, minimale Stile für die neuen Ansichten „Regeln“ und „Einrichtung“.
+     Bei Bedarf gern in styles.css übernehmen und hier entfernen. */
+  .regeln-liste { margin: 0 0 1em; padding-left: 1.25em; }
+  .regeln-liste li { margin-bottom: 0.5em; }
+  .regeln-liste--nummeriert { padding-left: 1.5em; }
+  .einrichtung-bild {
+    display: block;
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    margin: 0.75em auto 1.5em;
+  }
+</style>
+
+<!-- ===================================================================
+     Cloudflare Web Analytics – Besucherzählung
+     Ersetze DEIN-TOKEN durch deinen Cloudflare-Web-Analytics-Token
+     aus dem Cloudflare-Dashboard (Analytics & Logs → Web Analytics).
+     =================================================================== -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "b0104e23676648ac8d6184472b5d7d15"}'></script>
+</head>
+
+<body>
+<div class="tisch">
+  <div class="block">
+
+    <header class="kopf">
+      <p class="augenbraue">Allgäuer Stichspiel · Punkteblock</p>
+      <h1 class="titel">Portriga</h1>
+    </header>
+
+    <main id="ansichten">
+
+      <!-- ============ SETUP ============ -->
+      <section class="ansicht" id="ansicht-setup" aria-label="Neue Partie einrichten">
+        <div class="feldgruppe">
+          <label class="label" for="neuer-spieler">Neuen Spieler anlegen</label>
+          <div class="zeile">
+            <input class="eingabe" id="neuer-spieler" type="text" autocomplete="off"
+                   placeholder="Name" maxlength="40">
+            <button class="knopf" id="btn-spieler-anlegen" type="button">Anlegen</button>
+          </div>
+          <p class="hinweis" id="hinweis-neuer-spieler" role="status"></p>
+        </div>
+
+        <hr class="trenner">
+
+        <div class="feldgruppe">
+          <label class="label" for="anzahl-spieler">Anzahl der Spieler</label>
+          <input class="eingabe eingabe--schmal" id="anzahl-spieler" type="number"
+                 inputmode="numeric" min="1" max="10" step="1" placeholder="z. B. 4">
+        </div>
+
+        <div id="spieler-auswahl" class="feldgruppe"></div>
+
+        <p class="fehler" id="fehler-setup" role="alert"></p>
+
+        <div class="knopfreihe">
+          <button class="knopf knopf--stark" id="btn-spiel-starten" type="button" hidden>Spiel starten</button>
+        </div>
+
+        <hr class="trenner">
+
+        <div class="knopfreihe">
+          <button class="knopf knopf--leise" id="btn-statistik" type="button">Spielerstatistik</button>
+          <button class="knopf knopf--leise" id="btn-bearbeiten" type="button">Bearbeiten</button>
+          <button class="knopf knopf--leise" id="btn-zu-regeln" type="button">Regeln</button>
+          <button class="knopf knopf--leise" id="btn-zu-einrichtung" type="button">Einrichtung</button>
+          <button class="knopf knopf--leise" id="btn-teilen" type="button">Teilen</button>
+        </div>
+        <p class="hinweis" id="hinweis-teilen" role="status"></p>
+
+        <p class="speicherwarnung" id="speicherwarnung" hidden>
+          Dieser Browser erlaubt kein dauerhaftes Speichern. Die Partie funktioniert,
+          aber die Daten sind nach dem Schließen des Tabs weg.
+        </p>
+      </section>
+
+      <!-- ============ SPIEL ============ -->
+      <section class="ansicht" id="ansicht-spiel" hidden aria-label="Laufende Partie">
+        <!-- Signature: Rundenleiste zeigt den Kartenbogen 1→7→1 über alle 15 Runden -->
+        <div class="rundenleiste" id="rundenleiste" aria-hidden="true"></div>
+        <p class="rundenstand" id="rundenstand"></p>
+
+        <div id="runden-eingaben" class="eingabeliste"></div>
+
+        <p class="fehler" id="hinweis-stiche" role="status"></p>
+
+        <div class="knopfreihe">
+          <button class="knopf knopf--stark" id="btn-runde-abschliessen" type="button" disabled>
+            Runde abschließen
+          </button>
+          <button class="knopf knopf--leise" id="btn-korrigieren-spiel" type="button">
+            Letzte Runde korrigieren
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ ENDE ============ -->
+      <section class="ansicht" id="ansicht-ende" hidden aria-label="Partie beendet">
+        <h2 class="ueberschrift">Spiel beendet</h2>
+        <div id="endstand" class="endstand"></div>
+
+        <hr class="trenner">
+        <h3 class="unterschrift">Punkteverlauf</h3>
+        <div id="verlauf-chart" class="chart"></div>
+        <div id="chart-legende" class="legende"></div>
+
+        <hr class="trenner">
+        <h3 class="unterschrift">Historie <span class="beiwerk">Ansage / Stiche / Punkte</span></h3>
+        <div class="tabellenrahmen"><div id="historie-tabelle"></div></div>
+
+        <hr class="trenner">
+        <h3 class="unterschrift">Statistik dieser Partie</h3>
+        <div id="partie-statistik" class="notizen"></div>
+
+        <div class="knopfreihe knopfreihe--abstand">
+          <button class="knopf knopf--leise" id="btn-korrigieren-ende" type="button">
+            Letzte Runde korrigieren
+          </button>
+          <button class="knopf knopf--stark" id="btn-neues-spiel" type="button">Neues Spiel</button>
+          <button class="knopf knopf--leise" id="btn-statistik-ende" type="button">Spielerstatistik</button>
+        </div>
+      </section>
+
+      <!-- ============ STATISTIK ============ -->
+      <section class="ansicht" id="ansicht-statistik" hidden aria-label="Spielerstatistik">
+        <h2 class="ueberschrift">Spielerstatistik</h2>
+        <div id="statistik-inhalt"></div>
+        <div class="knopfreihe knopfreihe--abstand">
+          <button class="knopf knopf--leise" id="btn-statistik-zurueck" type="button">Zurück</button>
+        </div>
+      </section>
+
+      <!-- ============ BEARBEITEN ============ -->
+      <section class="ansicht" id="ansicht-bearbeiten" hidden aria-label="Bearbeiten">
+        <h2 class="ueberschrift">Bearbeiten</h2>
+        <div class="menue">
+          <button class="menuepunkt" id="btn-zu-spieler-loeschen" type="button">
+            <span class="menuepunkt__titel">Spieler löschen</span>
+            <span class="menuepunkt__text">Erscheint in alten Partien als „Gelöschter Spieler“</span>
+          </button>
+          <button class="menuepunkt" id="btn-zu-spieler-bearbeiten" type="button">
+            <span class="menuepunkt__titel">Spieler bearbeiten</span>
+            <span class="menuepunkt__text">Namen ändern</span>
+          </button>
+          <button class="menuepunkt" id="btn-zu-spiel-bearbeiten" type="button">
+            <span class="menuepunkt__titel">Spiel bearbeiten</span>
+            <span class="menuepunkt__text">Endpunkte, Datum und Uhrzeit ändern</span>
+          </button>
+          <button class="menuepunkt" id="btn-zu-spiel-loeschen" type="button">
+            <span class="menuepunkt__titel">Spiel löschen</span>
+            <span class="menuepunkt__text">Verschwindet aus allen Statistiken</span>
+          </button>
+        </div>
+
+        <hr class="trenner">
+        <div class="feldgruppe">
+          <p class="label">Datensicherung</p>
+          <p class="notiz">Die Partien liegen nur in diesem Browser. Sicherung herunterladen,
+            um sie auf ein anderes Gerät zu übertragen.</p>
+          <div class="knopfreihe">
+            <button class="knopf knopf--leise" id="btn-export" type="button">Sicherung speichern</button>
+            <button class="knopf knopf--leise" id="btn-import" type="button">Sicherung laden</button>
+            <input type="file" id="import-datei" accept="application/json,.json" hidden>
+          </div>
+          <p class="hinweis" id="hinweis-sicherung" role="status"></p>
+        </div>
+
+        <div class="knopfreihe knopfreihe--abstand">
+          <button class="knopf knopf--leise" id="btn-bearbeiten-zurueck" type="button">Zurück</button>
+        </div>
+      </section>
+
+      <!-- ============ SPIELER LÖSCHEN ============ -->
+      <section class="ansicht" id="ansicht-spieler-loeschen" hidden aria-label="Spieler löschen">
+        <h2 class="ueberschrift">Spieler löschen</h2>
+        <div class="feldgruppe">
+          <label class="label" for="wahl-spieler-loeschen">Spieler auswählen</label>
+          <select class="eingabe" id="wahl-spieler-loeschen"></select>
+        </div>
+        <p class="fehler" id="fehler-spieler-loeschen" role="alert"></p>
+        <div class="knopfreihe">
+          <button class="knopf knopf--gefahr" id="btn-spieler-loeschen" type="button">Spieler löschen</button>
+          <button class="knopf knopf--leise zurueck-bearbeiten" type="button">Zurück</button>
+        </div>
+      </section>
+
+      <!-- ============ SPIELER BEARBEITEN ============ -->
+      <section class="ansicht" id="ansicht-spieler-bearbeiten" hidden aria-label="Spieler bearbeiten">
+        <h2 class="ueberschrift">Spieler bearbeiten</h2>
+        <div class="feldgruppe">
+          <label class="label" for="wahl-spieler-bearbeiten">Spieler auswählen</label>
+          <select class="eingabe" id="wahl-spieler-bearbeiten"></select>
+        </div>
+        <div class="feldgruppe">
+          <label class="label" for="neuer-name">Neuer Name</label>
+          <input class="eingabe" id="neuer-name" type="text" autocomplete="off" maxlength="40">
+        </div>
+        <p class="fehler" id="fehler-spieler-bearbeiten" role="alert"></p>
+        <div class="knopfreihe">
+          <button class="knopf knopf--stark" id="btn-spieler-speichern" type="button">Speichern</button>
+          <button class="knopf knopf--leise zurueck-bearbeiten" type="button">Zurück</button>
+        </div>
+      </section>
+
+      <!-- ============ SPIEL LÖSCHEN ============ -->
+      <section class="ansicht" id="ansicht-spiel-loeschen" hidden aria-label="Spiel löschen">
+        <h2 class="ueberschrift">Spiel löschen</h2>
+        <div class="feldgruppe">
+          <label class="label" for="wahl-spiel-loeschen">Partie auswählen</label>
+          <select class="eingabe" id="wahl-spiel-loeschen"></select>
+        </div>
+        <p class="fehler" id="fehler-spiel-loeschen" role="alert"></p>
+        <div class="knopfreihe">
+          <button class="knopf knopf--gefahr" id="btn-spiel-loeschen" type="button">Partie löschen</button>
+          <button class="knopf knopf--leise zurueck-bearbeiten" type="button">Zurück</button>
+        </div>
+      </section>
+
+      <!-- ============ SPIEL BEARBEITEN ============ -->
+      <section class="ansicht" id="ansicht-spiel-bearbeiten" hidden aria-label="Spiel bearbeiten">
+        <h2 class="ueberschrift">Spiel bearbeiten</h2>
+        <div class="feldgruppe">
+          <label class="label" for="wahl-spiel-bearbeiten">Partie auswählen</label>
+          <select class="eingabe" id="wahl-spiel-bearbeiten"></select>
+        </div>
+
+        <div id="spiel-bearbeiten-felder" hidden>
+          <div class="zeile zeile--zwei">
+            <div class="feldgruppe">
+              <label class="label" for="spiel-datum">Datum</label>
+              <input class="eingabe" id="spiel-datum" type="date">
+            </div>
+            <div class="feldgruppe">
+              <label class="label" for="spiel-zeit">Uhrzeit</label>
+              <input class="eingabe" id="spiel-zeit" type="time">
+            </div>
+          </div>
+          <p class="label">Endpunkte</p>
+          <div id="spiel-punkte-felder" class="eingabeliste"></div>
+        </div>
+
+        <p class="fehler" id="fehler-spiel-bearbeiten" role="alert"></p>
+        <div class="knopfreihe">
+          <button class="knopf knopf--stark" id="btn-spiel-speichern" type="button">Speichern</button>
+          <button class="knopf knopf--leise zurueck-bearbeiten" type="button">Zurück</button>
+        </div>
+      </section>
+
+      <!-- ============ REGELN ============ -->
+      <section class="ansicht" id="ansicht-regeln" hidden aria-label="Regeln">
+        <h2 class="ueberschrift">Regeln</h2>
+        <div class="regeln-inhalt">
+
+          <h3 class="unterschrift">Worum es geht</h3>
+          <p class="notiz">Portriga ist das Allgäuer Stichspiel für 3 bis 10 Spieler. Jeder schätzt zu
+            Beginn jeder Runde sein Blatt ein und sagt an, wie viele Stiche er gewinnen wird.
+            Wer richtig liegt, bekommt Pluspunkte – wer daneben liegt, Minuspunkte.</p>
+
+          <h3 class="unterschrift">Karten</h3>
+          <p class="notiz">Gespielt wird mit dem deutschen Blatt zu 36 Karten je Farbe
+            (6, 7, 8, 9, 10, Unter, Ober, König, Ass). Bis zu fünf Spieler reicht ein
+            Kartenspiel, ab sechs Spielern kommt ein zweites dazu.</p>
+
+          <h3 class="unterschrift">Ablauf einer Partie</h3>
+          <p class="notiz">Eine Partie dauert 15 Runden. Die Anzahl der Karten pro Spieler
+            steigt von Runde zu Runde: 1, 2, 3 … bis 7. Mit 7 Karten wird insgesamt dreimal
+            gespielt, danach geht es wieder rückwärts bis auf 1 Karte. Nach jeder Runde
+            wandert der Geber im Uhrzeigersinn weiter.</p>
+
+          <h3 class="unterschrift">Trumpf</h3>
+          <p class="notiz">Nachdem der Geber ausgeteilt hat, wird die oberste Karte des
+            Reststapels aufgedeckt. Ihre Farbe ist für diese Runde Trumpf.</p>
+
+          <h3 class="unterschrift">Ansage</h3>
+          <p class="notiz">Beginnend beim Spieler links vom Geber sagt reihum jeder an, wie
+            viele Stiche er mit seinem Blatt gewinnen kann. Auch „null“ ist erlaubt. Die
+            Summe aller Ansagen muss nicht mit der Anzahl der gespielten Karten übereinstimmen.</p>
+
+          <h3 class="unterschrift">Stiche spielen</h3>
+          <p class="notiz">Der Spieler links vom Geber spielt die erste Karte aus. Alle
+            anderen müssen die angespielte Farbe bedienen. Wer das nicht kann, muss – sofern
+            vorhanden – mit Trumpf stechen, andernfalls darf eine beliebige Karte abgeworfen
+            werden. Den Stich gewinnt die höchste Karte der angespielten Farbe oder der
+            höchste Trumpf. Werden mit zwei Kartenspielen gleiche Karten ausgespielt, zählt
+            die zuerst gespielte höher.</p>
+
+          <h3 class="unterschrift">Punkte</h3>
+          <p class="notiz">Am Ende jeder Runde wird verglichen, ob die Ansage erfüllt wurde:</p>
+          <ul class="regeln-liste">
+            <li>Ansage erfüllt: 10 Punkte plus 3 Punkte pro Stich. Wer z. B. 3 Stiche
+              angesagt und gemacht hat, bekommt 19 Punkte; bei einer Ansage von 0 sind es
+              10 Punkte.</li>
+            <li>Ansage verfehlt: 3 Minuspunkte für jeden Stich Differenz – egal ob zu viele
+              oder zu wenige Stiche gemacht wurden.</li>
+          </ul>
+
+          <h3 class="unterschrift">Spielende</h3>
+          <p class="notiz">Nach 15 Runden gewinnt, wer die meisten Punkte gesammelt hat.</p>
+
+        </div>
+        <div class="knopfreihe knopfreihe--abstand">
+          <button class="knopf knopf--leise" id="btn-regeln-zurueck" type="button">Zurück</button>
+        </div>
+      </section>
+
+      <!-- ============ EINRICHTUNG ============ -->
+      <section class="ansicht" id="ansicht-einrichtung" hidden aria-label="Einrichtung">
+        <h2 class="ueberschrift">Einrichtung</h2>
+        <p class="notiz">Portriga lässt sich wie eine App auf dem Startbildschirm ablegen –
+          ganz ohne App Store. Dann öffnet sich der Punkteblock mit einem Fingertipp,
+          genau wie eine installierte App.</p>
+
+        <hr class="trenner">
+
+        <h3 class="unterschrift">iPhone / iPad <span class="beiwerk">Safari</span></h3>
+        <ol class="regeln-liste regeln-liste--nummeriert">
+          <li>Portriga in Safari öffnen.</li>
+          <li>Unten auf das Teilen-Symbol tippen (Quadrat mit Pfeil nach oben).</li>
+          <li>Im Menü „Zum Home-Bildschirm“ auswählen.</li>
+          <li>Namen bestätigen und oben rechts auf „Hinzufügen“ tippen.</li>
+        </ol>
+        <img class="einrichtung-bild" src="screen_apple.png"
+             alt="Screenshot: In Safari über das Teilen-Symbol „Zum Home-Bildschirm“ wählen">
+
+        <hr class="trenner">
+
+        <h3 class="unterschrift">Android <span class="beiwerk">Chrome</span></h3>
+        <ol class="regeln-liste regeln-liste--nummeriert">
+          <li>Portriga in Chrome öffnen.</li>
+          <li>Oben rechts auf das Drei-Punkte-Menü tippen.</li>
+          <li>„App installieren“ bzw. „Zum Startbildschirm hinzufügen“ auswählen.</li>
+          <li>Auswahl mit „Installieren“ bzw. „Hinzufügen“ bestätigen.</li>
+        </ol>
+        <img class="einrichtung-bild" src="screen_android.png"
+             alt="Screenshot: In Chrome über das Menü „Zum Startbildschirm hinzufügen“ wählen">
+
+        <div class="knopfreihe knopfreihe--abstand">
+          <button class="knopf knopf--leise" id="btn-einrichtung-zurueck" type="button">Zurück</button>
+        </div>
+      </section>
+
+      <!-- ============ SICHERHEITSABFRAGE ============ -->
+      <section class="ansicht" id="ansicht-sicherheit" hidden aria-label="Sicherheitsabfrage">
+        <div class="warnblock">
+          <p class="augenbraue augenbraue--warnung">Sicherheitsabfrage</p>
+          <p class="warnblock__text" id="sicherheit-text"></p>
+        </div>
+        <div class="knopfreihe">
+          <button class="knopf knopf--gefahr" id="btn-sicherheit-ja" type="button">Ja, wirklich</button>
+          <button class="knopf knopf--leise" id="btn-sicherheit-nein" type="button">Abbrechen</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="fuss">
+    <p>Punkte werden nur in diesem Browser gespeichert.</p>
+  </footer>
+</div>
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+<script>
+(function () {
+  // Ansicht wechseln, ohne die bestehende App-Logik in app.js anzufassen.
+  function zeigeAnsicht(id) {
+    document.querySelectorAll('main#ansichten .ansicht').forEach(function (ansicht) {
+      ansicht.hidden = (ansicht.id !== id);
+    });
+  }
+
+  var btnZuRegeln = document.getElementById('btn-zu-regeln');
+  var btnRegelnZurueck = document.getElementById('btn-regeln-zurueck');
+  var btnZuEinrichtung = document.getElementById('btn-zu-einrichtung');
+  var btnEinrichtungZurueck = document.getElementById('btn-einrichtung-zurueck');
+
+  if (btnZuRegeln) {
+    btnZuRegeln.addEventListener('click', function () { zeigeAnsicht('ansicht-regeln'); });
+  }
+  if (btnRegelnZurueck) {
+    btnRegelnZurueck.addEventListener('click', function () { zeigeAnsicht('ansicht-setup'); });
+  }
+  if (btnZuEinrichtung) {
+    btnZuEinrichtung.addEventListener('click', function () { zeigeAnsicht('ansicht-einrichtung'); });
+  }
+  if (btnEinrichtungZurueck) {
+    btnEinrichtungZurueck.addEventListener('click', function () { zeigeAnsicht('ansicht-setup'); });
+  }
+
+  // Teilen-Button: klassisches Teilen-Menü des Betriebssystems, sonst Link kopieren.
+  var btnTeilen = document.getElementById('btn-teilen');
+  var hinweisTeilen = document.getElementById('hinweis-teilen');
+
+  if (btnTeilen) {
+    btnTeilen.addEventListener('click', function () {
+      var daten = {
+        title: 'Portriga – Punkteblock',
+        text: 'Portriga: der Punkteblock für das Kartenspiel Portriga.',
+        url: window.location.href
+      };
+      if (navigator.share) {
+        navigator.share(daten).catch(function () { /* abgebrochen, kein Fehler nötig */ });
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(daten.url).then(function () {
+          if (hinweisTeilen) { hinweisTeilen.textContent = 'Link kopiert!'; }
+        }).catch(function () {
+          if (hinweisTeilen) { hinweisTeilen.textContent = daten.url; }
+        });
+      } else {
+        window.prompt('Link kopieren:', daten.url);
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
