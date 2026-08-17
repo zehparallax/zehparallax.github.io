@@ -654,3 +654,227 @@ tr.spielerzeile-tr td:nth-child(2) { font-weight: 600; }
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ============================================================
+   Sprachwahl und Einrichtung
+   ============================================================ */
+
+/* hidden muss gewinnen, auch gegen Klassen mit eigenem display */
+[hidden] { display: none !important; }
+
+/* ---------- Sprachknopf im Kopf ---------- */
+
+.kopf { position: relative; }
+
+.sprachknopf {
+  position: absolute;
+  top: -4px;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--ui);
+  color: var(--tinte);
+  background-color: var(--block-tief);
+  border: 1px solid var(--block-linie);
+  border-bottom-width: 2px;
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.08s ease;
+}
+
+.sprachknopf:hover { background-color: #EFDFBC; }
+.sprachknopf:active { transform: translateY(1px); border-bottom-width: 1px; }
+.sprachknopf:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.sprachknopf__flagge { font-size: 1.05rem; line-height: 1; }
+
+.sprachknopf__code {
+  font-family: var(--zahlen);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--tinte-schwach);
+}
+
+/* ---------- Sprachliste: ein zweiter Zettel auf dem Block ---------- */
+
+.sprachwahl {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(10px, 4vw, 40px);
+  background-color: rgba(28, 18, 12, 0.66);
+}
+
+.sprachwahl__blatt {
+  width: min(460px, 100%);
+  height: min(78vh, 640px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: var(--block);
+  border-radius: var(--radius);
+  padding: clamp(16px, 4vw, 24px);
+  box-shadow: 0 20px 44px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
+  /* dieselbe angedeutete Lochung wie beim Block */
+  background-image: radial-gradient(circle at 50% 0,
+    rgba(0,0,0,0.16) 0 3px, transparent 3px);
+  background-size: 46px 10px;
+  background-repeat: repeat-x;
+  background-position: top;
+}
+
+.sprachwahl__kopf {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--tinte);
+}
+
+.sprachwahl__blatt .eingabe { flex: none; }
+
+/* min-height: 0 ist Pflicht, sonst wächst die Liste über den Rahmen
+   hinaus statt zu scrollen und die hinteren Länder sind unerreichbar. */
+.sprachwahl__liste {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: grid;
+  gap: 2px;
+  align-content: start;
+}
+
+.sprachzeile {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  text-align: left;
+  font-family: var(--ui);
+  color: var(--tinte);
+  background-color: transparent;
+  border: 0;
+  border-left: 3px solid transparent;
+  border-radius: var(--radius);
+  padding: 9px 10px;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.sprachzeile:hover { background-color: rgba(255,255,255,0.6); }
+.sprachzeile:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+.sprachzeile[aria-pressed="true"] {
+  background-color: rgba(228,180,72,0.25);
+  border-left-color: var(--gold);
+}
+
+.sprachzeile__flagge { font-size: 1.3rem; line-height: 1; width: 1.6em; text-align: center; }
+
+.sprachzeile__text { display: grid; flex: 1 1 auto; min-width: 0; }
+.sprachzeile__text b {
+  font-family: var(--display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sprachzeile__text small { font-size: 0.76rem; color: var(--tinte-schwach); }
+
+.sprachzeile__code {
+  font-family: var(--zahlen);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--tinte-schwach);
+}
+
+/* ---------- Reiter in der Einrichtung ---------- */
+
+.reiter {
+  display: flex;
+  gap: 0;
+  margin: 18px 0 20px;
+  border-bottom: 2px solid var(--tinte);
+}
+
+.reiter__knopf {
+  flex: 1 1 0;
+  font-family: var(--ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--tinte-schwach);
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 10px 8px;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.reiter__knopf:hover { background-color: rgba(0,0,0,0.04); }
+.reiter__knopf:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+/* Der gewählte Reiter sitzt wie ein Registerblatt auf der Linie */
+.reiter__knopf[aria-selected="true"] {
+  color: var(--tinte);
+  background-color: var(--block-tief);
+  border-color: var(--block-linie);
+  border-bottom: 2px solid var(--block-tief);
+}
+
+/* ---------- Nummerierte Schritte ---------- */
+
+.schritte {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  counter-reset: schritt;
+  display: grid;
+  gap: 12px;
+}
+
+.schritte li {
+  counter-increment: schritt;
+  position: relative;
+  padding-left: 42px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.schritte li::before {
+  content: counter(schritt);
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-family: var(--zahlen);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #22180D;
+  background-color: var(--gold);
+  border: 1px solid #A97717;
+  border-radius: var(--radius);
+}
+
+.schritte b { font-weight: 600; }
+
+@media (max-width: 480px) {
+  .sprachknopf { top: -2px; padding: 5px 8px; }
+  .titel { padding: 0 62px; }
+  .sprachwahl__blatt { height: 86vh; }
+}

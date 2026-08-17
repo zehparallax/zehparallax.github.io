@@ -16,10 +16,41 @@ entsprechen genau der bisherigen Python-/Flet-App.
 | `manifest.webmanifest` | Name und Symbol für den Homebildschirm |
 | `icon-*.png` | Symbole für Homebildschirm und Browser-Tab |
 | `icons_erzeugen.py` | Erzeugt die Icons neu (optional, nur zum Anpassen) |
+| `i18n.js` | Sprachmodul: Länderliste, Umschaltung, Zahlen- und Datumsformate |
+| `sprachen.js` | Alle Übersetzungen in einer Datei |
 
 Keine Abhängigkeiten, kein Build-Schritt. Die Schriften kommen von Google Fonts.
 
+## Sprache
+
+Oben rechts im Kopf sitzt ein Knopf mit Flagge und Länderkürzel. Ein Tipp darauf öffnet eine durchsuchbare Liste, die Seite stellt sich sofort um — auch die Texte, die erst beim Spielen entstehen.
+
+Länder und Sprachen sind getrennt: Deutschland, Österreich und die Schweiz teilen sich dieselbe Übersetzung, unterscheiden sich aber in Flagge, Kürzel und Zahlenformat. `REGIONS` in `i18n.js` kennt 69 Länder, angezeigt werden aber nur die, deren Sprachpaket in `sprachen.js` wirklich vorhanden ist. Sonst könnte jemand Portugal wählen und bekäme Deutsch.
+
+**Eine Sprache ergänzen:** In `sprachen.js` einen vorhandenen Block kopieren, das Kürzel ändern und die Texte übersetzen. Alle Schlüssel behalten, auch die Platzhalter in geschweiften Klammern wie `{name}` oder `{noetig}`. Die zugehörigen Länder erscheinen danach von selbst in der Auswahl.
+
+Prüfen, ob ein Paket vollständig ist:
+
+```bash
+node -e "
+const m=new module.constructor();
+m._compile(require('fs').readFileSync('sprachen.js','utf8')+';module.exports=SPRACHEN','x.js');
+const p=m.exports, ref=Object.keys(p.de);
+for (const [k,v] of Object.entries(p)) {
+  const fehlt = ref.filter(x => !(x in v));
+  if (fehlt.length) console.log(k, '->', fehlt);
+}
+console.log('geprüft:', Object.keys(p).length, 'Sprachen');
+"
+```
+
+Monatsnamen, Wochentage und Zahlformate stehen nirgends in den Paketen — die liefert `Intl` anhand des Ländercodes. Deshalb liest ein Schweizer „1'234" und ein Amerikaner „1,234" bei identischem Text.
+
+Standardsprache ist Deutsch, gesetzt über `FALLBACK` in `i18n.js`. Wer stattdessen die Browsersprache übernehmen will, ruft beim Start `I18N.detect()` statt `FALLBACK` auf.
+
 ## Symbol auf dem Homebildschirm
+
+Die Ansicht **Einrichtung** erklärt das Schritt für Schritt, mit Reitern für iPhone, Android und Rechner. Der passende Reiter ist anhand des Geräts vorgewählt, und wo Chrome es zulässt, steht dort zusätzlich ein Knopf, der direkt installiert. Die früheren Screenshots sind entfallen — sie veralten mit jeder Systemversion, nummerierte Schritte nicht.
 
 Wer die Seite auf dem Handy über „Zum Homebildschirm hinzufügen“ ablegt,
 bekommt ein eigenes Symbol statt eines Screenshots der Seite, und die App

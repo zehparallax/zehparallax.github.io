@@ -53,7 +53,10 @@
   <div class="block">
 
     <header class="kopf">
-      <p class="augenbraue">Allgäuer Stichspiel · Punkteblock</p>
+      <button class="sprachknopf" id="btn-sprache" type="button" data-i18n-aria="a11y.lang">
+        <span class="sprachknopf__flagge" id="sprache-flagge">🇩🇪</span><span class="sprachknopf__code" id="sprache-code">DE</span>
+      </button>
+      <p class="augenbraue" data-i18n="kopf.augenbraue"></p>
       <h1 class="titel">Portriga</h1>
     </header>
 
@@ -62,11 +65,11 @@
       <!-- ============ SETUP ============ -->
       <section class="ansicht" id="ansicht-setup" aria-label="Neue Partie einrichten">
         <div class="feldgruppe">
-          <label class="label" for="neuer-spieler">Neuen Spieler anlegen</label>
+          <label class="label" for="neuer-spieler" data-i18n="setup.neuerSpieler"></label>
           <div class="zeile">
             <input class="eingabe" id="neuer-spieler" type="text" autocomplete="off"
-                   placeholder="Name" maxlength="40">
-            <button class="knopf" id="btn-spieler-anlegen" type="button">Anlegen</button>
+                   data-i18n-ph="setup.namePh" maxlength="40">
+            <button class="knopf" id="btn-spieler-anlegen" type="button" data-i18n="setup.anlegen"></button>
           </div>
           <p class="hinweis" id="hinweis-neuer-spieler" role="status"></p>
         </div>
@@ -74,9 +77,9 @@
         <hr class="trenner">
 
         <div class="feldgruppe">
-          <label class="label" for="anzahl-spieler">Anzahl der Spieler</label>
+          <label class="label" for="anzahl-spieler" data-i18n="setup.anzahl"></label>
           <input class="eingabe eingabe--schmal" id="anzahl-spieler" type="number"
-                 inputmode="numeric" min="1" max="10" step="1" placeholder="z. B. 4">
+                 inputmode="numeric" min="1" max="10" step="1" data-i18n-ph="setup.anzahlPh">
         </div>
 
         <div id="spieler-auswahl" class="feldgruppe"></div>
@@ -84,24 +87,21 @@
         <p class="fehler" id="fehler-setup" role="alert"></p>
 
         <div class="knopfreihe">
-          <button class="knopf knopf--stark" id="btn-spiel-starten" type="button" hidden>Spiel starten</button>
+          <button class="knopf knopf--stark" id="btn-spiel-starten" type="button" hidden data-i18n="setup.start"></button>
         </div>
 
         <hr class="trenner">
 
         <div class="knopfreihe">
-          <button class="knopf knopf--leise" id="btn-statistik" type="button">Spielerstatistik</button>
-          <button class="knopf knopf--leise" id="btn-bearbeiten" type="button">Bearbeiten</button>
-          <button class="knopf knopf--leise" id="btn-zu-regeln" type="button">Regeln</button>
-          <button class="knopf knopf--leise" id="btn-zu-einrichtung" type="button">Einrichtung</button>
-          <button class="knopf knopf--leise" id="btn-teilen" type="button">Teilen</button>
+          <button class="knopf knopf--leise" id="btn-statistik" type="button" data-i18n="setup.statistik"></button>
+          <button class="knopf knopf--leise" id="btn-bearbeiten" type="button" data-i18n="setup.bearbeiten"></button>
+          <button class="knopf knopf--leise" id="btn-zu-regeln" type="button" data-i18n="setup.regeln"></button>
+          <button class="knopf knopf--leise" id="btn-zu-einrichtung" type="button" data-i18n="setup.einrichtung"></button>
+          <button class="knopf knopf--leise" id="btn-teilen" type="button" data-i18n="setup.teilen"></button>
         </div>
         <p class="hinweis" id="hinweis-teilen" role="status"></p>
 
-        <p class="speicherwarnung" id="speicherwarnung" hidden>
-          Dieser Browser erlaubt kein dauerhaftes Speichern. Die Partie funktioniert,
-          aber die Daten sind nach dem Schließen des Tabs weg.
-        </p>
+        <p class="speicherwarnung" id="speicherwarnung" hidden data-i18n="setup.speicherwarnung"></p>
       </section>
 
       <!-- ============ SPIEL ============ -->
@@ -115,333 +115,420 @@
         <p class="fehler" id="hinweis-stiche" role="status"></p>
 
         <div class="knopfreihe">
-          <button class="knopf knopf--stark" id="btn-runde-abschliessen" type="button" disabled>
-            Runde abschließen
-          </button>
-          <button class="knopf knopf--leise" id="btn-korrigieren-spiel" type="button">
-            Letzte Runde korrigieren
-          </button>
+          <button class="knopf knopf--stark" id="btn-runde-abschliessen" type="button" disabled data-i18n="spiel.abschliessen"></button>
+          <button class="knopf knopf--leise" id="btn-korrigieren-spiel" type="button" data-i18n="spiel.korrigieren"></button>
         </div>
       </section>
 
       <!-- ============ ENDE ============ -->
       <section class="ansicht" id="ansicht-ende" hidden aria-label="Partie beendet">
-        <h2 class="ueberschrift">Spiel beendet</h2>
+        <h2 class="ueberschrift" data-i18n="ende.titel"></h2>
         <div id="endstand" class="endstand"></div>
 
         <hr class="trenner">
-        <h3 class="unterschrift">Punkteverlauf</h3>
+        <h3 class="unterschrift" data-i18n="ende.verlauf"></h3>
         <div id="verlauf-chart" class="chart"></div>
         <div id="chart-legende" class="legende"></div>
 
         <hr class="trenner">
-        <h3 class="unterschrift">Historie <span class="beiwerk">Ansage / Stiche / Punkte</span></h3>
+        <h3 class="unterschrift"><span data-i18n="ende.historie"></span> <span class="beiwerk" data-i18n="ende.historieSub"></span></h3>
         <div class="tabellenrahmen"><div id="historie-tabelle"></div></div>
 
         <hr class="trenner">
-        <h3 class="unterschrift">Statistik dieser Partie</h3>
+        <h3 class="unterschrift" data-i18n="ende.partieStatistik"></h3>
         <div id="partie-statistik" class="notizen"></div>
 
         <div class="knopfreihe knopfreihe--abstand">
-          <button class="knopf knopf--leise" id="btn-korrigieren-ende" type="button">
-            Letzte Runde korrigieren
-          </button>
-          <button class="knopf knopf--stark" id="btn-neues-spiel" type="button">Neues Spiel</button>
-          <button class="knopf knopf--leise" id="btn-statistik-ende" type="button">Spielerstatistik</button>
+          <button class="knopf knopf--leise" id="btn-korrigieren-ende" type="button" data-i18n="spiel.korrigieren"></button>
+          <button class="knopf knopf--stark" id="btn-neues-spiel" type="button" data-i18n="ende.neuesSpiel"></button>
+          <button class="knopf knopf--leise" id="btn-statistik-ende" type="button" data-i18n="setup.statistik"></button>
         </div>
       </section>
 
       <!-- ============ STATISTIK ============ -->
       <section class="ansicht" id="ansicht-statistik" hidden aria-label="Spielerstatistik">
-        <h2 class="ueberschrift">Spielerstatistik</h2>
+        <h2 class="ueberschrift" data-i18n="stat.titel"></h2>
         <div id="statistik-inhalt"></div>
         <div class="knopfreihe knopfreihe--abstand">
-          <button class="knopf knopf--leise" id="btn-statistik-zurueck" type="button">Zurück</button>
+          <button class="knopf knopf--leise" id="btn-statistik-zurueck" type="button" data-i18n="allg.zurueck"></button>
         </div>
       </section>
 
       <!-- ============ BEARBEITEN ============ -->
       <section class="ansicht" id="ansicht-bearbeiten" hidden aria-label="Bearbeiten">
-        <h2 class="ueberschrift">Bearbeiten</h2>
+        <h2 class="ueberschrift" data-i18n="bearb.titel"></h2>
         <div class="menue">
           <button class="menuepunkt" id="btn-zu-spieler-loeschen" type="button">
-            <span class="menuepunkt__titel">Spieler löschen</span>
-            <span class="menuepunkt__text">Erscheint in alten Partien als „Gelöschter Spieler“</span>
+            <span class="menuepunkt__titel" data-i18n="bearb.spielerLoeschen"></span>
+            <span class="menuepunkt__text" data-i18n="bearb.spielerLoeschenText"></span>
           </button>
           <button class="menuepunkt" id="btn-zu-spieler-bearbeiten" type="button">
-            <span class="menuepunkt__titel">Spieler bearbeiten</span>
-            <span class="menuepunkt__text">Namen ändern</span>
+            <span class="menuepunkt__titel" data-i18n="bearb.spielerBearbeiten"></span>
+            <span class="menuepunkt__text" data-i18n="bearb.spielerBearbeitenText"></span>
           </button>
           <button class="menuepunkt" id="btn-zu-spiel-bearbeiten" type="button">
-            <span class="menuepunkt__titel">Spiel bearbeiten</span>
-            <span class="menuepunkt__text">Endpunkte, Datum und Uhrzeit ändern</span>
+            <span class="menuepunkt__titel" data-i18n="bearb.spielBearbeiten"></span>
+            <span class="menuepunkt__text" data-i18n="bearb.spielBearbeitenText"></span>
           </button>
           <button class="menuepunkt" id="btn-zu-spiel-loeschen" type="button">
-            <span class="menuepunkt__titel">Spiel löschen</span>
-            <span class="menuepunkt__text">Verschwindet aus allen Statistiken</span>
+            <span class="menuepunkt__titel" data-i18n="bearb.spielLoeschen"></span>
+            <span class="menuepunkt__text" data-i18n="bearb.spielLoeschenText"></span>
           </button>
         </div>
 
         <hr class="trenner">
         <div class="feldgruppe">
-          <p class="label">Datensicherung</p>
-          <p class="notiz">Die Partien liegen nur in diesem Browser. Sicherung herunterladen,
-            um sie auf ein anderes Gerät zu übertragen.</p>
+          <p class="label" data-i18n="bearb.sicherung"></p>
+          <p class="notiz" data-i18n="bearb.sicherungText"></p>
           <div class="knopfreihe">
-            <button class="knopf knopf--leise" id="btn-export" type="button">Sicherung speichern</button>
-            <button class="knopf knopf--leise" id="btn-import" type="button">Sicherung laden</button>
+            <button class="knopf knopf--leise" id="btn-export" type="button" data-i18n="bearb.export"></button>
+            <button class="knopf knopf--leise" id="btn-import" type="button" data-i18n="bearb.import"></button>
             <input type="file" id="import-datei" accept="application/json,.json" hidden>
           </div>
           <p class="hinweis" id="hinweis-sicherung" role="status"></p>
         </div>
 
         <div class="knopfreihe knopfreihe--abstand">
-          <button class="knopf knopf--leise" id="btn-bearbeiten-zurueck" type="button">Zurück</button>
+          <button class="knopf knopf--leise" id="btn-bearbeiten-zurueck" type="button" data-i18n="allg.zurueck"></button>
         </div>
       </section>
 
       <!-- ============ SPIELER LÖSCHEN ============ -->
       <section class="ansicht" id="ansicht-spieler-loeschen" hidden aria-label="Spieler löschen">
-        <h2 class="ueberschrift">Spieler löschen</h2>
+        <h2 class="ueberschrift" data-i18n="bearb.spielerLoeschen"></h2>
         <div class="feldgruppe">
-          <label class="label" for="wahl-spieler-loeschen">Spieler auswählen</label>
+          <label class="label" for="wahl-spieler-loeschen" data-i18n="bearb.spielerWaehlen"></label>
           <select class="eingabe" id="wahl-spieler-loeschen"></select>
         </div>
         <p class="fehler" id="fehler-spieler-loeschen" role="alert"></p>
         <div class="knopfreihe">
-          <button class="knopf knopf--gefahr" id="btn-spieler-loeschen" type="button">Spieler löschen</button>
-          <button class="knopf knopf--leise zurueck-bearbeiten" type="button">Zurück</button>
+          <button class="knopf knopf--gefahr" id="btn-spieler-loeschen" type="button" data-i18n="bearb.spielerLoeschen"></button>
+          <button class="knopf knopf--leise zurueck-bearbeiten" type="button" data-i18n="allg.zurueck"></button>
         </div>
       </section>
 
       <!-- ============ SPIELER BEARBEITEN ============ -->
       <section class="ansicht" id="ansicht-spieler-bearbeiten" hidden aria-label="Spieler bearbeiten">
-        <h2 class="ueberschrift">Spieler bearbeiten</h2>
+        <h2 class="ueberschrift" data-i18n="bearb.spielerBearbeiten"></h2>
         <div class="feldgruppe">
-          <label class="label" for="wahl-spieler-bearbeiten">Spieler auswählen</label>
+          <label class="label" for="wahl-spieler-bearbeiten" data-i18n="bearb.spielerWaehlen"></label>
           <select class="eingabe" id="wahl-spieler-bearbeiten"></select>
         </div>
         <div class="feldgruppe">
-          <label class="label" for="neuer-name">Neuer Name</label>
+          <label class="label" for="neuer-name" data-i18n="bearb.neuerName"></label>
           <input class="eingabe" id="neuer-name" type="text" autocomplete="off" maxlength="40">
         </div>
         <p class="fehler" id="fehler-spieler-bearbeiten" role="alert"></p>
         <div class="knopfreihe">
-          <button class="knopf knopf--stark" id="btn-spieler-speichern" type="button">Speichern</button>
-          <button class="knopf knopf--leise zurueck-bearbeiten" type="button">Zurück</button>
+          <button class="knopf knopf--stark" id="btn-spieler-speichern" type="button" data-i18n="allg.speichern"></button>
+          <button class="knopf knopf--leise zurueck-bearbeiten" type="button" data-i18n="allg.zurueck"></button>
         </div>
       </section>
 
       <!-- ============ SPIEL LÖSCHEN ============ -->
       <section class="ansicht" id="ansicht-spiel-loeschen" hidden aria-label="Spiel löschen">
-        <h2 class="ueberschrift">Spiel löschen</h2>
+        <h2 class="ueberschrift" data-i18n="bearb.spielLoeschen"></h2>
         <div class="feldgruppe">
-          <label class="label" for="wahl-spiel-loeschen">Partie auswählen</label>
+          <label class="label" for="wahl-spiel-loeschen" data-i18n="bearb.partieWaehlen"></label>
           <select class="eingabe" id="wahl-spiel-loeschen"></select>
         </div>
         <p class="fehler" id="fehler-spiel-loeschen" role="alert"></p>
         <div class="knopfreihe">
-          <button class="knopf knopf--gefahr" id="btn-spiel-loeschen" type="button">Partie löschen</button>
-          <button class="knopf knopf--leise zurueck-bearbeiten" type="button">Zurück</button>
+          <button class="knopf knopf--gefahr" id="btn-spiel-loeschen" type="button" data-i18n="bearb.partieLoeschen"></button>
+          <button class="knopf knopf--leise zurueck-bearbeiten" type="button" data-i18n="allg.zurueck"></button>
         </div>
       </section>
 
       <!-- ============ SPIEL BEARBEITEN ============ -->
       <section class="ansicht" id="ansicht-spiel-bearbeiten" hidden aria-label="Spiel bearbeiten">
-        <h2 class="ueberschrift">Spiel bearbeiten</h2>
+        <h2 class="ueberschrift" data-i18n="bearb.spielBearbeiten"></h2>
         <div class="feldgruppe">
-          <label class="label" for="wahl-spiel-bearbeiten">Partie auswählen</label>
+          <label class="label" for="wahl-spiel-bearbeiten" data-i18n="bearb.partieWaehlen"></label>
           <select class="eingabe" id="wahl-spiel-bearbeiten"></select>
         </div>
 
         <div id="spiel-bearbeiten-felder" hidden>
           <div class="zeile zeile--zwei">
             <div class="feldgruppe">
-              <label class="label" for="spiel-datum">Datum</label>
+              <label class="label" for="spiel-datum" data-i18n="bearb.datum"></label>
               <input class="eingabe" id="spiel-datum" type="date">
             </div>
             <div class="feldgruppe">
-              <label class="label" for="spiel-zeit">Uhrzeit</label>
+              <label class="label" for="spiel-zeit" data-i18n="bearb.uhrzeit"></label>
               <input class="eingabe" id="spiel-zeit" type="time">
             </div>
           </div>
-          <p class="label">Endpunkte</p>
+          <p class="label" data-i18n="bearb.endpunkte"></p>
           <div id="spiel-punkte-felder" class="eingabeliste"></div>
         </div>
 
         <p class="fehler" id="fehler-spiel-bearbeiten" role="alert"></p>
         <div class="knopfreihe">
-          <button class="knopf knopf--stark" id="btn-spiel-speichern" type="button">Speichern</button>
-          <button class="knopf knopf--leise zurueck-bearbeiten" type="button">Zurück</button>
+          <button class="knopf knopf--stark" id="btn-spiel-speichern" type="button" data-i18n="allg.speichern"></button>
+          <button class="knopf knopf--leise zurueck-bearbeiten" type="button" data-i18n="allg.zurueck"></button>
         </div>
       </section>
 
       <!-- ============ REGELN ============ -->
       <section class="ansicht" id="ansicht-regeln" hidden aria-label="Regeln">
-        <h2 class="ueberschrift">Regeln</h2>
+        <h2 class="ueberschrift" data-i18n="regeln.titel"></h2>
         <div class="regeln-inhalt">
-
-          <h3 class="unterschrift">Worum es geht</h3>
-          <p class="notiz">Portriga ist das Allgäuer Stichspiel für 3 bis 10 Spieler. Jeder schätzt zu
-            Beginn jeder Runde sein Blatt ein und sagt an, wie viele Stiche er gewinnen wird.
-            Wer richtig liegt, bekommt Pluspunkte – wer daneben liegt, Minuspunkte.</p>
-
-          <h3 class="unterschrift">Karten</h3>
-          <p class="notiz">Gespielt wird mit dem deutschen Blatt zu 36 Karten je Farbe
-            (6, 7, 8, 9, 10, Unter, Ober, König, Ass). Bis zu fünf Spieler reicht ein
-            Kartenspiel, ab sechs Spielern kommt ein zweites dazu.</p>
-
-          <h3 class="unterschrift">Ablauf einer Partie</h3>
-          <p class="notiz">Eine Partie dauert 15 Runden. Die Anzahl der Karten pro Spieler
-            steigt von Runde zu Runde: 1, 2, 3 … bis 7. Mit 7 Karten wird insgesamt dreimal
-            gespielt, danach geht es wieder rückwärts bis auf 1 Karte. Nach jeder Runde
-            wandert der Geber im Uhrzeigersinn weiter.</p>
-
-          <h3 class="unterschrift">Trumpf</h3>
-          <p class="notiz">Nachdem der Geber ausgeteilt hat, wird die oberste Karte des
-            Reststapels aufgedeckt. Ihre Farbe ist für diese Runde Trumpf.</p>
-
-          <h3 class="unterschrift">Ansage</h3>
-          <p class="notiz">Beginnend beim Spieler links vom Geber sagt reihum jeder an, wie
-            viele Stiche er mit seinem Blatt gewinnen kann. Auch „null“ ist erlaubt. Die
-            Summe aller Ansagen muss nicht mit der Anzahl der gespielten Karten übereinstimmen.</p>
-
-          <h3 class="unterschrift">Stiche spielen</h3>
-          <p class="notiz">Der Spieler links vom Geber spielt die erste Karte aus. Alle
-            anderen müssen die angespielte Farbe bedienen. Wer das nicht kann, muss – sofern
-            vorhanden – mit Trumpf stechen, andernfalls darf eine beliebige Karte abgeworfen
-            werden. Den Stich gewinnt die höchste Karte der angespielten Farbe oder der
-            höchste Trumpf. Werden mit zwei Kartenspielen gleiche Karten ausgespielt, zählt
-            die zuerst gespielte höher.</p>
-
-          <h3 class="unterschrift">Punkte</h3>
-          <p class="notiz">Am Ende jeder Runde wird verglichen, ob die Ansage erfüllt wurde:</p>
+          <h3 class="unterschrift" data-i18n="regeln.h1"></h3><p class="notiz" data-i18n="regeln.p1"></p>
+          <h3 class="unterschrift" data-i18n="regeln.h2"></h3><p class="notiz" data-i18n="regeln.p2"></p>
+          <h3 class="unterschrift" data-i18n="regeln.h3"></h3><p class="notiz" data-i18n="regeln.p3"></p>
+          <h3 class="unterschrift" data-i18n="regeln.h4"></h3><p class="notiz" data-i18n="regeln.p4"></p>
+          <h3 class="unterschrift" data-i18n="regeln.h5"></h3><p class="notiz" data-i18n="regeln.p5"></p>
+          <h3 class="unterschrift" data-i18n="regeln.h6"></h3><p class="notiz" data-i18n="regeln.p6"></p>
+          <h3 class="unterschrift" data-i18n="regeln.h7"></h3><p class="notiz" data-i18n="regeln.p7"></p>
           <ul class="regeln-liste">
-            <li>Ansage erfüllt: 10 Punkte plus 3 Punkte pro Stich. Wer z. B. 3 Stiche
-              angesagt und gemacht hat, bekommt 19 Punkte; bei einer Ansage von 0 sind es
-              10 Punkte.</li>
-            <li>Ansage verfehlt: 3 Minuspunkte für jeden Stich Differenz – egal ob zu viele
-              oder zu wenige Stiche gemacht wurden.</li>
+            <li data-i18n="regeln.li1"></li>
+            <li data-i18n="regeln.li2"></li>
           </ul>
-
-          <h3 class="unterschrift">Spielende</h3>
-          <p class="notiz">Nach 15 Runden gewinnt, wer die meisten Punkte gesammelt hat.</p>
-
+          <h3 class="unterschrift" data-i18n="regeln.h8"></h3><p class="notiz" data-i18n="regeln.p8"></p>
         </div>
         <div class="knopfreihe knopfreihe--abstand">
-          <button class="knopf knopf--leise" id="btn-regeln-zurueck" type="button">Zurück</button>
+          <button class="knopf knopf--leise" id="btn-regeln-zurueck" type="button" data-i18n="allg.zurueck"></button>
         </div>
       </section>
 
       <!-- ============ EINRICHTUNG ============ -->
       <section class="ansicht" id="ansicht-einrichtung" hidden aria-label="Einrichtung">
-        <h2 class="ueberschrift">Einrichtung</h2>
-        <p class="notiz">Portriga lässt sich wie eine App auf dem Startbildschirm ablegen –
-          ganz ohne App Store. Dann öffnet sich der Punkteblock mit einem Fingertipp,
-          genau wie eine installierte App.</p>
+        <h2 class="ueberschrift" data-i18n="einr.titel"></h2>
+        <p class="notiz" id="einr-intro"></p>
 
-        <hr class="trenner">
+        <div class="reiter" id="einr-reiter" role="tablist">
+          <button class="reiter__knopf" type="button" data-os="ios" role="tab" data-i18n="einr.ios"></button>
+          <button class="reiter__knopf" type="button" data-os="android" role="tab" data-i18n="einr.android"></button>
+          <button class="reiter__knopf" type="button" data-os="desktop" role="tab" data-i18n="einr.desktop"></button>
+        </div>
 
-        <h3 class="unterschrift">iPhone / iPad <span class="beiwerk">Safari</span></h3>
-        <ol class="regeln-liste regeln-liste--nummeriert">
-          <li>Portriga in Safari öffnen.</li>
-          <li>Unten auf das Teilen-Symbol tippen (Quadrat mit Pfeil nach oben).</li>
-          <li>Im Menü „Zum Home-Bildschirm“ auswählen.</li>
-          <li>Namen bestätigen und oben rechts auf „Hinzufügen“ tippen.</li>
-        </ol>
-        <img class="einrichtung-bild" src="screen_apple.png"
-             alt="Screenshot: In Safari über das Teilen-Symbol „Zum Home-Bildschirm“ wählen">
+        <ol class="schritte" id="einr-schritte"></ol>
 
-        <hr class="trenner">
+        <div class="knopfreihe">
+          <button class="knopf knopf--stark" id="btn-einr-installieren" type="button" hidden
+                  data-i18n="einr.install"></button>
+        </div>
 
-        <h3 class="unterschrift">Android <span class="beiwerk">Chrome</span></h3>
-        <ol class="regeln-liste regeln-liste--nummeriert">
-          <li>Portriga in Chrome öffnen.</li>
-          <li>Oben rechts auf das Drei-Punkte-Menü tippen.</li>
-          <li>„App installieren“ bzw. „Zum Startbildschirm hinzufügen“ auswählen.</li>
-          <li>Auswahl mit „Installieren“ bzw. „Hinzufügen“ bestätigen.</li>
-        </ol>
-        <img class="einrichtung-bild" src="screen_android.png"
-             alt="Screenshot: In Chrome über das Menü „Zum Startbildschirm hinzufügen“ wählen">
+        <p class="notiz" id="einr-notiz"></p>
 
         <div class="knopfreihe knopfreihe--abstand">
-          <button class="knopf knopf--leise" id="btn-einrichtung-zurueck" type="button">Zurück</button>
+          <button class="knopf knopf--leise" id="btn-einrichtung-zurueck" type="button" data-i18n="allg.zurueck"></button>
         </div>
       </section>
 
       <!-- ============ SICHERHEITSABFRAGE ============ -->
       <section class="ansicht" id="ansicht-sicherheit" hidden aria-label="Sicherheitsabfrage">
         <div class="warnblock">
-          <p class="augenbraue augenbraue--warnung">Sicherheitsabfrage</p>
+          <p class="augenbraue augenbraue--warnung" data-i18n="warn.titel"></p>
           <p class="warnblock__text" id="sicherheit-text"></p>
         </div>
         <div class="knopfreihe">
-          <button class="knopf knopf--gefahr" id="btn-sicherheit-ja" type="button">Ja, wirklich</button>
-          <button class="knopf knopf--leise" id="btn-sicherheit-nein" type="button">Abbrechen</button>
+          <button class="knopf knopf--gefahr" id="btn-sicherheit-ja" type="button" data-i18n="warn.ja"></button>
+          <button class="knopf knopf--leise" id="btn-sicherheit-nein" type="button" data-i18n="warn.nein"></button>
         </div>
       </section>
 
     </main>
   </div>
 
+  <div class="sprachwahl" id="sprachwahl" hidden>
+    <div class="sprachwahl__blatt">
+      <div class="sprachwahl__kopf">
+        <h2 class="unterschrift" data-i18n="lang.title" style="margin:0"></h2>
+        <button class="knopf knopf--leise" id="btn-sprache-zu" type="button" data-i18n="allg.zurueck"></button>
+      </div>
+      <input class="eingabe" id="sprache-suche" type="search" autocomplete="off" data-i18n-ph="lang.search">
+      <div class="sprachwahl__liste" id="sprache-liste"></div>
+    </div>
+  </div>
+
   <footer class="fuss">
-    <p>Punkte werden nur in diesem Browser gespeichert.</p>
+    <p data-i18n="fuss.text"></p>
   </footer>
 </div>
 
+<script src="sprachen.js"></script>
+<script src="i18n.js"></script>
 <script src="db.js"></script>
 <script src="app.js"></script>
 <script>
 (function () {
-  // Ansicht wechseln, ohne die bestehende App-Logik in app.js anzufassen.
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------------- Ansichtswechsel ---------------- */
+
   function zeigeAnsicht(id) {
     document.querySelectorAll('main#ansichten .ansicht').forEach(function (ansicht) {
       ansicht.hidden = (ansicht.id !== id);
     });
+    window.scrollTo(0, 0);
   }
 
-  var btnZuRegeln = document.getElementById('btn-zu-regeln');
-  var btnRegelnZurueck = document.getElementById('btn-regeln-zurueck');
-  var btnZuEinrichtung = document.getElementById('btn-zu-einrichtung');
-  var btnEinrichtungZurueck = document.getElementById('btn-einrichtung-zurueck');
+  var wege = [
+    ['btn-zu-regeln', 'ansicht-regeln'],
+    ['btn-regeln-zurueck', 'ansicht-setup'],
+    ['btn-einrichtung-zurueck', 'ansicht-setup']
+  ];
+  wege.forEach(function (w) {
+    var k = $(w[0]);
+    if (k) k.addEventListener('click', function () { zeigeAnsicht(w[1]); });
+  });
 
-  if (btnZuRegeln) {
-    btnZuRegeln.addEventListener('click', function () { zeigeAnsicht('ansicht-regeln'); });
-  }
-  if (btnRegelnZurueck) {
-    btnRegelnZurueck.addEventListener('click', function () { zeigeAnsicht('ansicht-setup'); });
-  }
-  if (btnZuEinrichtung) {
-    btnZuEinrichtung.addEventListener('click', function () { zeigeAnsicht('ansicht-einrichtung'); });
-  }
-  if (btnEinrichtungZurueck) {
-    btnEinrichtungZurueck.addEventListener('click', function () { zeigeAnsicht('ansicht-setup'); });
+  /* ---------------- Sprache ---------------- */
+
+  function zeichneSprachliste(filter) {
+    var kiste = $('sprache-liste');
+    var f = (filter || '').trim().toLowerCase();
+    kiste.innerHTML = '';
+    REGIONS.filter(function (r) {
+      return !f
+        || r.country.toLowerCase().indexOf(f) > -1
+        || r.label.toLowerCase().indexOf(f) > -1
+        || (LANG_NAMES[r.lang] || '').toLowerCase().indexOf(f) > -1
+        || r.code.toLowerCase().indexOf(f) > -1;
+    }).forEach(function (r) {
+      var k = document.createElement('button');
+      k.type = 'button';
+      k.className = 'sprachzeile';
+      k.setAttribute('aria-pressed', String(r.code === I18N.region.code));
+      k.innerHTML = '<span class="sprachzeile__flagge">' + r.flag + '</span>' +
+        '<span class="sprachzeile__text"><b>' + r.country + '</b>' +
+        '<small>' + (LANG_NAMES[r.lang] || r.lang) + '</small></span>' +
+        '<span class="sprachzeile__code">' + r.label + '</span>';
+      k.addEventListener('click', function () { setzeSprache(r.code); });
+      kiste.appendChild(k);
+    });
   }
 
-  // Teilen-Button: klassisches Teilen-Menü des Betriebssystems, sonst Link kopieren.
-  var btnTeilen = document.getElementById('btn-teilen');
-  var hinweisTeilen = document.getElementById('hinweis-teilen');
+  function setzeSprache(code) {
+    try { localStorage.setItem('portriga.sprache', code); } catch (e) {}
+    I18N.load(code);
+    $('sprachwahl').hidden = true;
+    uebernehmeSprache();
+  }
+
+  /* Alles neu beschriften. Die Ansichten, die ihre Inhalte selbst erzeugen,
+     baut app.js beim nächsten Öffnen ohnehin neu auf. */
+  function uebernehmeSprache() {
+    I18N.apply();
+    $('sprache-flagge').textContent = I18N.region.flag;
+    $('sprache-code').textContent = I18N.region.label;
+    zeichneEinrichtung();
+    if (window.Portriga && Portriga.neuZeichnen) Portriga.neuZeichnen();
+  }
+
+  $('btn-sprache').addEventListener('click', function () {
+    $('sprache-suche').value = '';
+    zeichneSprachliste('');
+    $('sprachwahl').hidden = false;
+    var aktiv = document.querySelector('.sprachzeile[aria-pressed="true"]');
+    if (aktiv) aktiv.scrollIntoView({ block: 'center' });
+  });
+  $('btn-sprache-zu').addEventListener('click', function () { $('sprachwahl').hidden = true; });
+  $('sprachwahl').addEventListener('click', function (e) {
+    if (e.target === $('sprachwahl')) $('sprachwahl').hidden = true;
+  });
+  $('sprache-suche').addEventListener('input', function (e) { zeichneSprachliste(e.target.value); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !$('sprachwahl').hidden) $('sprachwahl').hidden = true;
+  });
+
+  /* ---------------- Einrichtung ---------------- */
+
+  var SCHRITTE = { ios: 4, android: 4, desktop: 4 };
+  var installEreignis = null;
+
+  function erkenneSystem() {
+    var ua = navigator.userAgent;
+    // iPadOS meldet sich seit Version 13 als Mac; einen Mac mit Touch gibt es nicht.
+    if (/iPhone|iPad|iPod/.test(ua) || (/Mac/.test(ua) && navigator.maxTouchPoints > 1)) return 'ios';
+    if (/Android/.test(ua)) return 'android';
+    return 'desktop';
+  }
+  function istInstalliert() {
+    return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  }
+
+  var system = erkenneSystem();
+
+  function zeichneEinrichtung() {
+    var knoepfe = $('einr-reiter').querySelectorAll('.reiter__knopf');
+    Array.prototype.forEach.call(knoepfe, function (k) {
+      k.setAttribute('aria-selected', String(k.dataset.os === system));
+    });
+
+    var liste = '';
+    for (var i = 1; i <= SCHRITTE[system]; i++) {
+      liste += '<li>' + I18N.t('einr.' + system + i) + '</li>';
+    }
+    $('einr-schritte').innerHTML = liste;
+    $('einr-notiz').textContent = I18N.t('einr.' + system + 'Note');
+    $('einr-intro').textContent = I18N.t(istInstalliert() ? 'einr.introDone' : 'einr.intro');
+    // Knopf nur zeigen, wenn er auch zum tatsächlichen Gerät gehört
+    $('btn-einr-installieren').hidden = !installEreignis || system !== erkenneSystem();
+  }
+
+  $('einr-reiter').addEventListener('click', function (e) {
+    var k = e.target.closest('.reiter__knopf');
+    if (!k) return;
+    system = k.dataset.os;
+    zeichneEinrichtung();
+  });
+
+  $('btn-zu-einrichtung').addEventListener('click', function () {
+    system = erkenneSystem();
+    zeichneEinrichtung();
+    zeigeAnsicht('ansicht-einrichtung');
+  });
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();               // eigenen Knopf statt Chromes Balken
+    installEreignis = e;
+    zeichneEinrichtung();
+  });
+  window.addEventListener('appinstalled', function () {
+    installEreignis = null;
+    $('btn-einr-installieren').hidden = true;
+  });
+  $('btn-einr-installieren').addEventListener('click', function () {
+    if (!installEreignis) return;
+    installEreignis.prompt();
+    installEreignis = null;           // verbraucht, ein zweiter Aufruf wirft
+    $('btn-einr-installieren').hidden = true;
+  });
+
+  /* ---------------- Teilen ---------------- */
+
+  var btnTeilen = $('btn-teilen');
+  var hinweisTeilen = $('hinweis-teilen');
 
   if (btnTeilen) {
     btnTeilen.addEventListener('click', function () {
       var daten = {
-        title: 'Portriga – Punkteblock',
-        text: 'Portriga: der Punkteblock für das Kartenspiel Portriga.',
+        title: 'Portriga',
+        text: I18N.t('msg.teilenText'),
         url: window.location.href
       };
       if (navigator.share) {
-        navigator.share(daten).catch(function () { /* abgebrochen, kein Fehler nötig */ });
+        navigator.share(daten).catch(function () { /* abgebrochen */ });
       } else if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(daten.url).then(function () {
-          if (hinweisTeilen) { hinweisTeilen.textContent = 'Link kopiert!'; }
+          if (hinweisTeilen) hinweisTeilen.textContent = I18N.t('msg.linkKopiert');
         }).catch(function () {
-          if (hinweisTeilen) { hinweisTeilen.textContent = daten.url; }
+          if (hinweisTeilen) hinweisTeilen.textContent = daten.url;
         });
       } else {
-        window.prompt('Link kopieren:', daten.url);
+        window.prompt(daten.url);
       }
     });
   }
+
+  /* ---------------- Start ---------------- */
+
+  var gemerkt = null;
+  try { gemerkt = localStorage.getItem('portriga.sprache'); } catch (e) {}
+  I18N.load(gemerkt || FALLBACK);
+  uebernehmeSprache();
 })();
 </script>
 </body>

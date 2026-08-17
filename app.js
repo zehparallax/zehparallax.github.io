@@ -128,7 +128,7 @@
       var vorher = sel.value;
       leere(sel);
 
-      var platzhalter = machen("option", null, "– bitte wählen –");
+      var platzhalter = machen("option", null, I18N.t("allg.bitteWaehlen"));
       platzhalter.value = "";
       sel.appendChild(platzhalter);
 
@@ -158,7 +158,7 @@
 
     for (var i = 0; i < anzahl; i++) {
       var gruppe = machen("div", "feldgruppe");
-      var label = machen("label", "label", "Spieler " + (i + 1));
+      var label = machen("label", "label", I18N.t("setup.spielerN", { n: i + 1 }));
       label.setAttribute("for", "spieler-wahl-" + i);
 
       var sel = machen("select", "eingabe");
@@ -183,7 +183,7 @@
     var hinweis = $("hinweis-neuer-spieler");
 
     if (!name) {
-      hinweis.textContent = "Bitte einen Namen eingeben.";
+      hinweis.textContent = I18N.t("msg.nameEingeben");
       return;
     }
 
@@ -191,8 +191,8 @@
     DB.spielerAnlegen(name);
     feld.value = "";
     hinweis.textContent = vorhanden
-      ? "„" + name + "“ gibt es schon."
-      : "„" + name + "“ angelegt.";
+      ? I18N.t("msg.gibtEsSchon", { name: name })
+      : I18N.t("msg.angelegt", { name: name });
 
     aktualisiereSpielerOptionen();
     feld.focus();
@@ -208,14 +208,14 @@
     var gewaehlt = selects.map(function (s) { return s.value; });
 
     if (!gewaehlt.length || gewaehlt.some(function (v) { return !v; })) {
-      fehler.textContent = "Bitte für jeden Spieler einen Namen auswählen.";
+      fehler.textContent = I18N.t("msg.jedemNamen");
       return;
     }
 
     var einmalig = {};
     for (var i = 0; i < gewaehlt.length; i++) {
       if (einmalig[gewaehlt[i]]) {
-        fehler.textContent = "Jeder Spieler darf nur einmal ausgewählt werden.";
+        fehler.textContent = I18N.t("msg.nurEinmal");
         return;
       }
       einmalig[gewaehlt[i]] = true;
@@ -251,7 +251,7 @@
       var paar = machen("div", "paar");
 
       var ansageFeld = machen("div", "punktefeld");
-      var ansageLabel = machen("label", "label", "Ansage");
+      var ansageLabel = machen("label", "label", I18N.t("spiel.ansage"));
       ansageLabel.setAttribute("for", "ansage-" + i);
       var ansage = machen("input", "eingabe");
       ansage.type = "number";
@@ -263,7 +263,7 @@
       ansageFeld.appendChild(ansage);
 
       var sticheFeld = machen("div", "punktefeld");
-      var sticheLabel = machen("label", "label", "Stiche");
+      var sticheLabel = machen("label", "label", I18N.t("spiel.stiche"));
       sticheLabel.setAttribute("for", "stiche-" + i);
       var stiche = machen("input", "eingabe");
       stiche.type = "number";
@@ -306,10 +306,12 @@
 
     $("rundenstand").innerHTML = "";
     $("rundenstand").appendChild(
-      document.createTextNode("Runde " + (r + 1) + " / " + MAX_RUNDEN + " ")
+      document.createTextNode(I18N.t("spiel.runde", { r: r + 1, max: MAX_RUNDEN }) + " ")
     );
     $("rundenstand").appendChild(
-      machen("em", null, karten + (karten === 1 ? " Karte" : " Karten"))
+      machen("em", null, karten === 1
+        ? I18N.t("spiel.karteEine")
+        : I18N.t("spiel.kartenViele", { n: karten }))
     );
 
     spielerDaten.forEach(function (s) {
@@ -345,12 +347,12 @@
       });
 
       if (!zahlenOk) {
-        hinweis = "Bitte gültige Zahlen eingeben.";
+        hinweis = I18N.t("msg.gueltigeZahlen");
       } else {
         var noetig = KARTEN[historie.length];
         gueltig = summe === noetig;
         if (!gueltig) {
-          hinweis = "Summe der Stiche muss " + noetig + " sein (aktuell " + summe + ").";
+          hinweis = I18N.t("msg.summeStiche", { noetig: noetig, summe: summe });
         }
       }
     }
@@ -440,7 +442,7 @@
       if (sieger) {
         var krone = machen("span", "krone", "👑");
         krone.setAttribute("role", "img");
-        krone.setAttribute("aria-label", "Sieger");
+        krone.setAttribute("aria-label", I18N.t("ende.sieger"));
         name.appendChild(krone);
       }
       name.appendChild(document.createTextNode(e.name));
@@ -508,7 +510,7 @@
     var svg = document.createElementNS(NS, "svg");
     svg.setAttribute("viewBox", "0 0 " + B + " " + H);
     svg.setAttribute("role", "img");
-    svg.setAttribute("aria-label", "Punkteverlauf über alle Runden");
+    svg.setAttribute("aria-label", I18N.t("ende.verlaufA11y"));
 
     function linie(x1, y1, x2, y2, farbe, breite, gestrichelt) {
       var l = document.createElementNS(NS, "line");
@@ -589,7 +591,7 @@
     var tabelle = machen("table", "raster");
     var kopf = machen("thead");
     var kopfZeile = machen("tr");
-    kopfZeile.appendChild(machen("th", null, "R"));
+    kopfZeile.appendChild(machen("th", null, I18N.t("ende.spalteRunde")));
 
     spielerDaten.forEach(function (s) {
       var th = machen("th", null, s.name);
@@ -643,8 +645,9 @@
 
       behaelter.appendChild(
         machen("p", null,
-          s.name + ": " + prozent.toFixed(0) + "% richtig angesagt, " +
-          nullAnsagen + "× Null angesagt")
+          I18N.t("ende.partieStatText", {
+            name: s.name, prozent: prozent.toFixed(0), "null": nullAnsagen
+          }))
       );
       behaelter.lastChild.style.margin = "0";
     });
@@ -665,16 +668,16 @@
     var rekord = DB.gesamtHighscore();
     if (rekord) {
       var block = machen("div", "rekord");
-      block.appendChild(machen("p", "rekord__label", "Highscore"));
+      block.appendChild(machen("p", "rekord__label", I18N.t("stat.highscore")));
       block.appendChild(
-        machen("p", "rekord__wert", rekord.name + " mit " + rekord.punkte + " Punkten")
+        machen("p", "rekord__wert", I18N.t("stat.highscoreWert", { name: rekord.name, punkte: rekord.punkte }))
       );
       behaelter.appendChild(block);
     }
 
     var zeilen = DB.statistikAlleSpieler();
     if (!zeilen.length) {
-      behaelter.appendChild(machen("p", "leer", "Noch keine Spieler angelegt."));
+      behaelter.appendChild(machen("p", "leer", I18N.t("stat.keineSpieler")));
       return;
     }
 
@@ -683,7 +686,8 @@
 
     var kopf = machen("thead");
     var kopfZeile = machen("tr");
-    ["", "Spieler", "Spiele", "Ø Pkt/Spiel", "Ø Platz", "Highscore"].forEach(function (t) {
+    ["", I18N.t("stat.spieler"), I18N.t("stat.spiele"), I18N.t("stat.avgPunkte"),
+     I18N.t("stat.avgPlatz"), I18N.t("stat.highscore")].forEach(function (t) {
       kopfZeile.appendChild(machen("th", null, t));
     });
     kopf.appendChild(kopfZeile);
@@ -747,10 +751,7 @@
     behaelter.appendChild(rahmen);
 
     behaelter.appendChild(
-      machen("p", "legendetext",
-        "Ø Platz ist genormt: 0 = im Schnitt immer Platz 1, 1 = im Schnitt immer " +
-        "letzter Platz. So bleiben Partien mit unterschiedlicher Spieleranzahl " +
-        "vergleichbar. Tippe auf einen Spieler, um alle seine Partien im Detail zu sehen.")
+      machen("p", "legendetext", I18N.t("stat.legende"))
     );
   }
 
@@ -759,7 +760,7 @@
     var partien = DB.spieleEinesSpielers(spielerId);
 
     if (!partien.length) {
-      behaelter.appendChild(machen("p", "leer", "Noch keine Partien gespielt."));
+      behaelter.appendChild(machen("p", "leer", I18N.t("stat.keinePartien")));
       return behaelter;
     }
 
@@ -768,16 +769,16 @@
       var karte = machen("div", "partie" + (sieg ? " partie--sieg" : ""));
 
       var kopf = machen("div", "partie__kopf");
-      kopf.appendChild(machen("span", null, "Platz " + p.platz + " / " + p.spieleranzahl));
-      kopf.appendChild(machen("span", null, p.punkte + " Punkte"));
+      kopf.appendChild(machen("span", null, I18N.t("stat.platzVon", { platz: p.platz, anzahl: p.spieleranzahl })));
+      kopf.appendChild(machen("span", null, I18N.t("stat.punkte", { punkte: p.punkte })));
       karte.appendChild(kopf);
 
       karte.appendChild(machen("p", "partie__text",
-        sieg ? "Sieger dieser Partie"
-             : p.punkte_diff_zu_platz1 + " Punkte Rückstand auf Platz 1"));
+        sieg ? I18N.t("stat.siegerPartie")
+             : I18N.t("stat.rueckstand", { punkte: p.punkte_diff_zu_platz1 })));
 
       karte.appendChild(machen("p", "partie__text",
-        "Gegner: " + (p.gegner.length ? p.gegner.join(", ") : "–")));
+        I18N.t("stat.gegner", { liste: p.gegner.length ? p.gegner.join(", ") : "–" })));
 
       karte.appendChild(machen("p", "partie__datum", p.datum_anzeige));
       behaelter.appendChild(karte);
@@ -814,7 +815,7 @@
 
   function fuelleSpielerAuswahl(sel) {
     leere(sel);
-    var platzhalter = machen("option", null, "– bitte wählen –");
+    var platzhalter = machen("option", null, I18N.t("allg.bitteWaehlen"));
     platzhalter.value = "";
     sel.appendChild(platzhalter);
 
@@ -827,7 +828,7 @@
 
   function fuelleSpielAuswahl(sel) {
     leere(sel);
-    var platzhalter = machen("option", null, "– bitte wählen –");
+    var platzhalter = machen("option", null, I18N.t("allg.bitteWaehlen"));
     platzhalter.value = "";
     sel.appendChild(platzhalter);
 
@@ -860,16 +861,13 @@
     var sel = $("wahl-spieler-loeschen");
     var id = sel.value;
     if (!id) {
-      $("fehler-spieler-loeschen").textContent = "Bitte einen Spieler auswählen.";
+      $("fehler-spieler-loeschen").textContent = I18N.t("fehler.spielerWaehlen");
       return;
     }
     var name = nameVon(id);
 
     frageNach(
-      "Soll der Spieler „" + name + "“ wirklich gelöscht werden? Er wird in " +
-      "bisherigen Partien fortan als „Gelöschter Spieler“ angezeigt, erscheint " +
-      "nicht mehr in der Statistik-Übersicht und steht für neue Partien nicht " +
-      "mehr zur Auswahl.",
+      I18N.t("frage.spielerLoeschen", { name: name }),
       function () {
         DB.spielerLoeschen(id);
         aktualisiereSpielerOptionen();
@@ -892,17 +890,17 @@
     var neuerName = ($("neuer-name").value || "").trim();
     var fehler = $("fehler-spieler-bearbeiten");
 
-    if (!id) { fehler.textContent = "Bitte einen Spieler auswählen."; return; }
-    if (!neuerName) { fehler.textContent = "Bitte einen Namen eingeben."; return; }
+    if (!id) { fehler.textContent = I18N.t("fehler.spielerWaehlen"); return; }
+    if (!neuerName) { fehler.textContent = I18N.t("msg.nameEingeben"); return; }
 
     var alterName = nameVon(id);
 
     frageNach(
-      "Soll „" + alterName + "“ wirklich in „" + neuerName + "“ umbenannt werden?",
+      I18N.t("frage.umbenennen", { alt: alterName, neu: neuerName }),
       function () {
         var ergebnis = DB.spielerUmbenennen(id, neuerName);
         if (!ergebnis.erfolg) {
-          fehler.textContent = ergebnis.fehler || "Fehler beim Speichern.";
+          fehler.textContent = ergebnis.fehler || I18N.t("fehler.speichern");
           return "ansicht-spieler-bearbeiten";
         }
         aktualisiereSpielerOptionen();
@@ -924,14 +922,13 @@
     var sel = $("wahl-spiel-loeschen");
     var id = sel.value;
     if (!id) {
-      $("fehler-spiel-loeschen").textContent = "Bitte eine Partie auswählen.";
+      $("fehler-spiel-loeschen").textContent = I18N.t("fehler.partieWaehlen");
       return;
     }
     var beschriftung = beschriftungVon(sel);
 
     frageNach(
-      "Soll die Partie „" + beschriftung + "“ wirklich gelöscht werden? " +
-      "Sie verschwindet dadurch aus allen Spielerstatistiken.",
+      I18N.t("frage.spielLoeschen", { partie: beschriftung }),
       function () { DB.spielLoeschen(id); },
       "ansicht-spiel-loeschen"
     );
@@ -1005,15 +1002,15 @@
     var id = sel.value;
     var fehler = $("fehler-spiel-bearbeiten");
 
-    if (!id) { fehler.textContent = "Bitte eine Partie auswählen."; return; }
+    if (!id) { fehler.textContent = I18N.t("fehler.partieWaehlen"); return; }
 
     var ids = Object.keys(spielPunkteFelder);
-    if (!ids.length) { fehler.textContent = "Bitte zuerst eine Partie auswählen."; return; }
+    if (!ids.length) { fehler.textContent = I18N.t("fehler.partieZuerst"); return; }
 
     var datumWert = $("spiel-datum").value;
     var zeitWert = $("spiel-zeit").value;
     if (!datumWert || !zeitWert) {
-      fehler.textContent = "Bitte Datum und Uhrzeit angeben.";
+      fehler.textContent = I18N.t("fehler.datumZeit");
       return;
     }
 
@@ -1022,7 +1019,7 @@
       var roh = spielPunkteFelder[ids[i]].value;
       var wert = parseInt(roh, 10);
       if (roh === "" || isNaN(wert)) {
-        fehler.textContent = "Bitte für alle Spieler eine gültige Punktzahl eingeben.";
+        fehler.textContent = I18N.t("fehler.punktzahl");
         return;
       }
       punkte[ids[i]] = wert;
@@ -1032,8 +1029,7 @@
     var beschriftung = beschriftungVon(sel);
 
     frageNach(
-      "Sollen die Änderungen an der Partie „" + beschriftung + "“ wirklich " +
-      "gespeichert werden?",
+      I18N.t("frage.spielAendern", { partie: beschriftung }),
       function () { DB.spielBearbeiten(id, neuesDatum, punkte); },
       "ansicht-spiel-bearbeiten"
     );
@@ -1056,7 +1052,7 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    $("hinweis-sicherung").textContent = "Sicherung heruntergeladen.";
+    $("hinweis-sicherung").textContent = I18N.t("bearb.exportOk");
   }
 
   function sicherungLaden(datei) {
@@ -1064,14 +1060,14 @@
     leser.onload = function () {
       try {
         DB.importieren(String(leser.result));
-        $("hinweis-sicherung").textContent = "Sicherung geladen.";
+        $("hinweis-sicherung").textContent = I18N.t("bearb.importOk");
         aktualisiereSpielerOptionen();
       } catch (e) {
-        $("hinweis-sicherung").textContent = "Datei konnte nicht gelesen werden.";
+        $("hinweis-sicherung").textContent = I18N.t("bearb.importFehler");
       }
     };
     leser.onerror = function () {
-      $("hinweis-sicherung").textContent = "Datei konnte nicht gelesen werden.";
+      $("hinweis-sicherung").textContent = I18N.t("bearb.importFehler");
     };
     leser.readAsText(datei);
   }
@@ -1158,6 +1154,25 @@
 
     zeigeAnsicht("ansicht-setup");
   }
+
+  /* Nach einem Sprachwechsel: alles neu aufbauen, was app.js selbst erzeugt.
+     Die festen Texte erledigt I18N.apply(), diese Ansichten aber nicht. */
+  function neuZeichnen() {
+    var sichtbar = document.querySelector("main#ansichten .ansicht:not([hidden])");
+    var id = sichtbar ? sichtbar.id : "ansicht-setup";
+
+    erstelleSpielerFelder();
+    aktualisiereSpielerOptionen();
+
+    if (id === "ansicht-spiel" && spielerDaten.length) zeichneRunde();
+    if (id === "ansicht-ende" && spielerDaten.length) {
+      zeichneEndstand(); zeichneVerlauf(); zeichneHistorie(); zeichnePartieStatistik();
+    }
+    if (id === "ansicht-statistik") baueStatistik();
+    if (id === "ansicht-spiel-bearbeiten") spielAuswahlGeaendert();
+  }
+
+  window.Portriga = { neuZeichnen: neuZeichnen };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start);
